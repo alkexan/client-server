@@ -78,7 +78,6 @@ int main(int argc, char **argv) {
       std::cerr << "Exception: " << e.what() << std::endl;
       std::cerr << "Code: " << err << " Err: " << std::strerror(err)
                 << std::endl;
-      // errorHandler(err);
     }
 #ifndef DEBUG
   } else {
