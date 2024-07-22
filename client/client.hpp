@@ -37,7 +37,6 @@ private:
   struct Handlers {
     connect_handler_t connect_handler;
     connect_handler_t disconnect_handler;
-    // client_data_handler_t client_data_handler;
   } m_handlers;
 };
 
@@ -47,9 +46,6 @@ inline void Client::setConnectHandler(connect_handler_t hndl) {
 inline void Client::setDisconnectHandler(connect_handler_t hndl) {
   m_handlers.disconnect_handler = hndl;
 }
-// inline void Client::setClientDataHandler(client_data_handler_t hndl) {
-//   m_handlers.client_data_handler = hndl;
-// }
 
 inline const Client::ClientDesc &Client::getClientDesc() const {
   return m_desc;

@@ -14,8 +14,9 @@ Client::Client(ClientDesc desc)
                                   .sin_addr = {0},
                               }),
       m_handlers((Handlers){
-          .connect_handler = [](int) {}, .disconnect_handler = [](int) {},
-          /*.client_data_handler = [](int, const char *, size_t) {}*/}) {
+          .connect_handler = [](int) {},
+          .disconnect_handler = [](int) {},
+      }) {
   m_address.sin_addr.s_addr = inet_addr("127.0.0.1");
 }
 
