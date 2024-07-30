@@ -49,23 +49,13 @@ int main(int argc, char **argv) {
 
       threads.emplace_back([]() {
         while (true) {
-          {
-            // std::lock_guard<std::mutex> lock(mutex);
-            server->accepting();
-          }
-
-          std::this_thread::sleep_for(std::chrono::milliseconds(50));
+          server->accepting();
         };
       });
 
       threads.emplace_back([]() {
         while (true) {
-          {
-            // std::lock_guard<std::mutex> lock(mutex);
-            server->waitData();
-          }
-
-          std::this_thread::sleep_for(std::chrono::milliseconds(50));
+          server->waitData();
         };
       });
 

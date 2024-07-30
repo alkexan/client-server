@@ -45,7 +45,7 @@ private:
     client_data_handler_t client_data_handler;
   } m_handlers;
 
-  std::mutex m_mutex;
+   std::mutex m_mutex;
 
   void disconnect(int clientSocket);
 };

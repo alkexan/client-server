@@ -2,6 +2,7 @@
 #include <cstddef>
 #include <cstring>
 #include <iostream>
+#include <mutex>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -58,7 +59,6 @@ void Server::accepting() {
 
   if (newClient < 0) {
     std::cerr << "accept failed" << std::endl;
-    // continue;
   } else {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_handlers.connect_handler(newClient);
