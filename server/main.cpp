@@ -32,12 +32,12 @@ void clientDataHandler(int client, const char *buffer, size_t len) {
 
 int main(int argc, char **argv) {
   int err = 0;
-#ifndef DEBUG
+#ifdef USE_PARAMS
   if (argc > 1) {
     uint16_t port = htons(*(uint16_t *)argv[1]);
 #else
   uint16_t port = 8080;
-#endif // DEBUG
+#endif // USE_PARAMS
 
     try {
       server = std::make_unique<socket_test::Server>(port);
@@ -69,10 +69,10 @@ int main(int argc, char **argv) {
       std::cerr << "Code: " << err << " Err: " << std::strerror(err)
                 << std::endl;
     }
-#ifndef DEBUG
+#ifdef USE_PARAMS
   } else {
     err = EXIT_FAILURE;
   }
-#endif // DEBUG
+#endif // USE_PARAMS
   return err;
 }

@@ -1,9 +1,11 @@
 #include "client.hpp"
 #include <chrono>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <iostream>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <sys/socket.h>
 #include <sys/types.h>
@@ -25,14 +27,16 @@ int main(int argc, char **argv) {
   unsigned short perSec;
   std::string clientName;
 
-#ifndef DEBUG
+#ifdef USE_PARAMS
   if (argc > 1) {
     port = htons(*(uint16_t *)argv[1]);
+    perSec = std::atoi(argv[2]);
+    clientName = std::string (argv[3]);
 #else
   port = 8080;
   perSec = 3;
   clientName = "Client";
-#endif // DEBUG
+#endif // USE_PARAMS
 
     try {
       client = std::make_unique<socket_test::Client>(
@@ -73,10 +77,10 @@ int main(int argc, char **argv) {
       std::cerr << "Code: " << err << " Err: " << std::strerror(err)
                 << std::endl;
     }
-#ifndef DEBUG
+#ifdef USE_PARAMS
   } else {
     err = EXIT_FAILURE;
   }
-#endif // DEBUG
+#endif // USE_PARAMS
   return err;
 }
