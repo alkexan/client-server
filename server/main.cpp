@@ -55,7 +55,7 @@ int main(int argc, char **argv) {
 
       threads.emplace_back([]() {
         while (true) {
-          server->waitData();
+          server->processing();
         };
       });
 

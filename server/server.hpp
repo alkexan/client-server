@@ -1,10 +1,9 @@
 #pragma once
 
+#include <boost/lockfree/queue.hpp>
 #include <cstddef>
 #include <functional>
-#include <mutex>
 #include <netinet/in.h>
-#include <set>
 
 namespace socket_test {
 
@@ -20,7 +19,7 @@ public:
 
   void start();
   void accepting();
-  void waitData();
+  void processing();
 
   void setPort(unsigned short port);
 
@@ -37,7 +36,6 @@ private:
   char m_buffer[1024];
 
   struct sockaddr_in m_address;
-  std::set<int> m_clients;
 
   struct Handlers {
     connect_handler_t connect_handler;
@@ -45,9 +43,7 @@ private:
     client_data_handler_t client_data_handler;
   } m_handlers;
 
-   std::mutex m_mutex;
-
-  void disconnect(int clientSocket);
+  boost::lockfree::queue<int> m_clients {QUEUE_NODES};
 };
 
 inline void Server::setPort(unsigned short port) { m_port = port; }

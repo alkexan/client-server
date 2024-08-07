@@ -2,7 +2,6 @@
 #include <cstddef>
 #include <cstring>
 #include <iostream>
-#include <mutex>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -16,7 +15,6 @@ Server::Server(unsigned short port)
           (Handlers){.connect_handler = [](int) {},
                      .disconnect_handler = [](int) {},
                      .client_data_handler = [](int, const char *, size_t) {}}) {
-  m_clients.clear();
   m_address.sin_addr.s_addr = INADDR_ANY;
 }
 
@@ -60,35 +58,22 @@ void Server::accepting() {
   if (newClient < 0) {
     std::cerr << "accept failed" << std::endl;
   } else {
-    std::lock_guard<std::mutex> lock(m_mutex);
     m_handlers.connect_handler(newClient);
-    m_clients.insert(newClient);
+    m_clients.push(newClient);
   }
 }
 
-void Server::waitData() {
-  std::lock_guard<std::mutex> lock(m_mutex);
+void Server::processing() {
+  if (!m_clients.empty()) {
+    int clientSocket;
+    m_clients.pop(clientSocket);
+    int answ = recv(clientSocket, m_buffer, sizeof(m_buffer), 0);
+    m_handlers.client_data_handler(clientSocket, m_buffer, answ);
 
-  if (m_clients.size() > 0) {
-    for (auto clientSocket : m_clients) {
-      int answ = recv(clientSocket, m_buffer, sizeof(m_buffer), 0);
-
-      if (answ <= 0) {
-        m_handlers.disconnect_handler(clientSocket);
-        disconnect(clientSocket);
-        break;
-      } else {
-        m_handlers.client_data_handler(clientSocket, m_buffer, answ);
-      }
-    }
-  }
-}
-
-void Server::disconnect(int clientSocket) {
-  if (clientSocket) {
     close(clientSocket);
-    m_clients.erase(clientSocket);
+    m_handlers.disconnect_handler(clientSocket);
   }
 }
+
 
 } // namespace socket_test
